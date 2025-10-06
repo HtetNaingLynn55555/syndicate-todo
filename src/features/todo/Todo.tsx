@@ -1,5 +1,6 @@
 import type { JSX } from "react"
 import { TodoInput } from "./todo-components/TodoInput"
+import { TodoFilter } from "./todo-components/TodoFilter"
 import { ShowTodo } from "./todo-components/ShowTodo"
 import { TodoCount } from "./todo-components/TodoCount"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
@@ -16,6 +17,7 @@ export const Todo = (): JSX.Element => {
       <ShowTodo todos={todos} />
       <div className="grid grid-cols-8 col-start-3 col-end-11 gap-2  ">
         <TodoCount count={todoCount.length} />
+        <TodoFilter />
       </div>
     </div>
   )

@@ -23,11 +23,11 @@ export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
         </div>
     
 
-      <div className="col-start-2 col-end-6">
+      <div className="col-start-2 col-end-7">
         <div className="flex items-center"
         >{todo.title}</div>
       </div>
-      <div className="col-start-6 col-end-7 flex  items-center">
+      <div className="col-start-7 col-end-8 flex  items-center">
 <FaTrashCan className="ml-auto  hover:cursor-pointer text-red-500" />
       </div>
       
