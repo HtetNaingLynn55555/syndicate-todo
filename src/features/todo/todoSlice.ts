@@ -1,17 +1,17 @@
-import type { PayloadAction } from "@reduxjs/toolkit"
+// import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 import supabase from "../../config/supabaseClient"
 export type TodoSliceState = {
-  id: number
+  id?: number
   title: string
   completed: boolean
   description?: string
   created_at?: string
 }
 export type TodoState = {
-  loading?: boolean ,
-  error : string | null,
-  todos : TodoSliceState[],
+  loading?: boolean
+  error: string | null
+  todos: TodoSliceState[]
 }
 
 const initialState: TodoState = {
@@ -24,14 +24,12 @@ export const todoSlice = createAppSlice({
   name: "todo",
   initialState,
   reducers: create => ({
-    
     fetchTodos: create.asyncThunk(
       async () => {
-        console.log("fetching todos")
         const { data, error } = await supabase.from("todos").select("*")
-       
+
         if (error) {
-          throw error;
+          throw error
         }
         return data as TodoSliceState[]
       },
@@ -46,7 +44,40 @@ export const todoSlice = createAppSlice({
         },
         rejected: (state, action) => {
           state.loading = false
-          state.error = action.error.message??"Failed to Load todos"
+          state.error = action.error.message ?? "Failed to Load todos"
+        },
+      },
+    ),
+    addTodos: create.asyncThunk(
+      async (todo: TodoSliceState, { rejectWithValue }) => {
+        try {
+          const { data, error } = await supabase
+            .from("todos")
+            .insert([todo])
+            .select()
+            .single()
+
+          if (error) {
+            throw error
+          }
+
+          return data as TodoSliceState
+        } catch (error: any) {
+          return rejectWithValue(error.message ?? "Failed to Add todo")
+        }
+      },
+      {
+        pending: state => {
+          state.loading = true
+          state.error = null
+        },
+        fulfilled: (state, action) => {
+          state.loading = false
+          state.todos.push(action.payload)
+        },
+        rejected: (state, action) => {
+          state.loading = false
+          state.error = action.payload as string
         },
       },
     ),
@@ -60,5 +91,6 @@ export const todoSlice = createAppSlice({
   },
 })
 
-export const {  fetchTodos } = todoSlice.actions
-export const {selectTodos, selectLoading, selectError, selectTodoCount } = todoSlice.selectors
+export const { addTodos, fetchTodos } = todoSlice.actions
+export const { selectTodos, selectLoading, selectError, selectTodoCount } =
+  todoSlice.selectors

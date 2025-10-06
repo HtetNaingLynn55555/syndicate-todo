@@ -8,8 +8,37 @@ import {
   ModalHeader,
 } from "flowbite-react"
 import { useState } from "react"
+import { useAppDispatch } from "../../../app/hooks"
+import { addTodos } from "../todoSlice"
+
 export const AddNewTodo = (): JSX.Element => {
+  const dispatch = useAppDispatch()
   const [openModal, setOpenModal] = useState(false)
+  const [todoTitle, setTodoTitle] = useState("")
+  const [todoDescription, setTodoDescription] = useState("")
+  const [error, setError] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!todoTitle || !todoDescription) {
+      setError(true)
+      return
+    }
+    if (todoTitle && todoDescription) {
+      setError(false)
+      dispatch(
+        addTodos({
+          title: todoTitle,
+          description: todoDescription,
+          completed: false,
+        }),
+      )
+      setTodoTitle("")
+      setTodoDescription("")
+      setOpenModal(false)
+    }
+  }
+
   return (
     <div className="sm:col-start-7 sm:col-end-9 col-span-2 flex justify-end items-center">
       <button
@@ -23,12 +52,25 @@ export const AddNewTodo = (): JSX.Element => {
         <ModalHeader>Add Todo </ModalHeader>
 
         <ModalBody>
-          <form className="flex flex-col gap-4 items-center justify-center w-full max-w-md mx-auto">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 items-center justify-center w-full max-w-md mx-auto"
+          >
             <div className="w-full">
               <div className="mb-2 block">
                 <Label htmlFor="base">Todo Title </Label>
               </div>
-              <TextInput id="base" type="text" sizing="md" className="w-full" />
+              <TextInput
+                id="base"
+                type="text"
+                value={todoTitle}
+                onChange={e => setTodoTitle(e.target.value)}
+                sizing="md"
+                className="w-full"
+              />
+              {error && !todoTitle ? (
+                <p className="text-red-500 pt-2">title is required</p>
+              ) : null}
             </div>
             <div className="w-full">
               <div className="mb-2 block">
@@ -38,12 +80,15 @@ export const AddNewTodo = (): JSX.Element => {
                 id="large"
                 type="text"
                 sizing="lg"
+                value={todoDescription}
+                onChange={e => setTodoDescription(e.target.value)}
                 className="w-full"
               />
+              {error && !todoDescription ? (
+                <p className="text-red-500 pt-2">description is required</p>
+              ) : null}
             </div>
-            <Button onClick={() => setOpenModal(false)} type="submit">
-              Submit
-            </Button>
+            <Button type="submit">Submit</Button>
           </form>
         </ModalBody>
       </Modal>
