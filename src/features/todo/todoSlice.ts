@@ -24,3 +24,22 @@ const initialState: TodoSliceState[] = [
 }
 
 ]
+
+export const todoSlice = createAppSlice({
+  name: "todo",
+  initialState,
+  reducers: create => ({
+    addTodo: create.reducer((state, action: PayloadAction<TodoSliceState>) => {
+      
+      state.push(action.payload)
+    }),
+
+  }),
+  
+  selectors: {
+    selectTodos: state => state,
+  },
+})
+
+export const { addTodo } = todoSlice.actions
+export const { selectTodos } = todoSlice.selectors
