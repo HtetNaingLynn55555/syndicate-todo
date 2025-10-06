@@ -8,117 +8,56 @@ export type TodoSliceState = {
   description?: string
   created_at?: string
 }
+export type TodoState = {
+  loading?: boolean ,
+  error : string | null,
+  todos : TodoSliceState[],
+}
 
-const initialState: TodoSliceState[] = [
-  // {
-  //   id: 1,
-  //   title: "Learn Redux",
-  //   completed: false,
-  //   description: "Learn Redux Toolkit and React-Redux",
-  // },
-  // {
-  //   id: 2,
-  //   title: "Build a Redux App",
-  //   completed: false,
-  //   description: "Build a Redux app using Redux Toolkit and React-Redux",
-  // },
-  // {
-  //   id: 3,
-  //   title:
-  //     "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed: true,
-  //   description:
-  //     "Learn TypeScript and use it with Redux Toolkit and React-Redux",
-  // },
-  // {
-  //   id: 4,
-  //   title:
-  //     "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed: true,
-  //   description:
-  //     "Learn TypeScript and use it with Redux Toolkit and React-Redux",
-  // },
-  // {
-  //   id: 5,
-  //   title:
-  //     "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed: true,
-  //   description:
-  //     "Learn TypeScript and use it with Redux Toolkit and React-Redux",
-  // },
-  // {
-  //   id : 6,
-  //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed : true,
-  //   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"
-  // },
-  // {
-  //   id : 7,
-  //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed : true,
-  //   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"
-  // },
-  // {
-  //   id : 8,
-  //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed : true,
-  //   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"
-  // },
-  // {
-  //   id : 9,
-  //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed : true,
-  //   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"
-  // },
-  // {
-  //   id : 10,
-  //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed : true,
-  //   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"
-  // },
-  // {
-  //   id : 11,
-  //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  //   completed : true,
-  //   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"
-  // },
-]
+const initialState: TodoState = {
+  loading: false,
+  error: null,
+  todos: [],
+}
 
 export const todoSlice = createAppSlice({
   name: "todo",
   initialState,
   reducers: create => ({
-    addTodo: create.reducer((state, action: PayloadAction<TodoSliceState>) => {
-      state.push(action.payload)
-    }),
+    
     fetchTodos: create.asyncThunk(
       async () => {
         console.log("fetching todos")
         const { data, error } = await supabase.from("todos").select("*")
         if (error) {
-          return [] as TodoSliceState[]
+          throw error;
         }
         return data as TodoSliceState[]
       },
       {
         pending: state => {
-          console.log("pending state")
+          state.loading = true
+          state.error = null
         },
         fulfilled: (state, action) => {
-          return action.payload
+          state.loading = false
+          state.todos = action.payload
         },
-        rejected: state => {
-          console.log("rejected state")
+        rejected: (state, action) => {
+          state.loading = false
+          state.error = action.error.message??"Failed to Load todos"
         },
       },
     ),
   }),
 
   selectors: {
-    selectTodos: state => state,
-    selectTodoCount: state => state.filter(todo => !todo.completed),
+    selectTodos: state => state.todos,
+    selectLoading: state => state.loading,
+    selectError: state => state.error,
+    selectTodoCount: state => state.todos.filter(todo => !todo.completed),
   },
 })
 
-export const { addTodo, fetchTodos } = todoSlice.actions
-export const { selectTodos, selectTodoCount } = todoSlice.selectors
+export const {  fetchTodos } = todoSlice.actions
+export const {selectTodos, selectLoading, selectError, selectTodoCount } = todoSlice.selectors

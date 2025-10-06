@@ -6,7 +6,7 @@ import { ShowTodo } from "./todo-components/ShowTodo"
 import { TodoCount } from "./todo-components/TodoCount"
 import { TodoHeader } from "./todo-components/TodoHeader"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { fetchTodos, selectTodos, selectTodoCount } from "./todoSlice"
+import { fetchTodos, selectError, selectLoading, selectTodos, selectTodoCount } from "./todoSlice"
 import { ClearCompleteTodo } from "./todo-components/ClearCompleteTodo"
 
 export const Todo = (): JSX.Element => {
