@@ -5,7 +5,6 @@ import {
   Button,
   Modal,
   ModalBody,
-  ModalFooter,
   ModalHeader,
 } from "flowbite-react"
 import { useState } from "react"
@@ -47,12 +46,6 @@ export const AddNewTodo = (): JSX.Element => {
             </Button>
           </form>
         </ModalBody>
-        {/* <ModalFooter>
-          <Button onClick={() => setOpenModal(false)}>I accept</Button>
-          <Button color="alternative" onClick={() => setOpenModal(false)}>
-            Decline
-          </Button>
-        </ModalFooter> */}
       </Modal>
     </div>
   )
