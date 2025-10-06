@@ -12,7 +12,7 @@ export const Todo = (): JSX.Element => {
   const todos = useAppSelector(selectTodos)
   const todoCount = useAppSelector(selectTodoCount)
   return (
-    <div className=" grid grid-cols-12 gap-4">
+    <div className=" grid grid-cols-12 gap-4 my-5">
       <h4 className="text-center col-start-1 col-end-13 "> Syndicate Todo</h4>
       <TodoInput />
       <ShowTodo todos={todos} />
