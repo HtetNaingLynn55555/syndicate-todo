@@ -1,5 +1,10 @@
 import type { JSX } from "react"
 
-export const ShowTodo = (): JSX.Element => {
-  return <div>Show Todo</div>
+import { TodoSliceState } from "../todoSlice"
+export const ShowTodo = ({todos} : {todos : TodoSliceState[]  }): JSX.Element => {
+  return <div>
+    {
+      todos.map(todo=> <div key={todo.id}>{todo.title}</div>)
+    }
+  </div>
 }
