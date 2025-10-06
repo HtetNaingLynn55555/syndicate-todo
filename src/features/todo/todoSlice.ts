@@ -1,50 +1,51 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
-
+import supabase from "../../config/supabaseClient"
 export type TodoSliceState = {
   id: number
   title: string
   completed: boolean
   description?: string
+  created_at?: string
 }
 
 const initialState: TodoSliceState[] = [
-  {
-    id: 1,
-    title: "Learn Redux",
-    completed: false,
-    description: "Learn Redux Toolkit and React-Redux",
-  },
-  {
-    id: 2,
-    title: "Build a Redux App",
-    completed: false,
-    description: "Build a Redux app using Redux Toolkit and React-Redux",
-  },
-  {
-    id: 3,
-    title:
-      "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-    completed: true,
-    description:
-      "Learn TypeScript and use it with Redux Toolkit and React-Redux",
-  },
-  {
-    id: 4,
-    title:
-      "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-    completed: true,
-    description:
-      "Learn TypeScript and use it with Redux Toolkit and React-Redux",
-  },
-  {
-    id: 5,
-    title:
-      "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-    completed: true,
-    description:
-      "Learn TypeScript and use it with Redux Toolkit and React-Redux",
-  },
+  // {
+  //   id: 1,
+  //   title: "Learn Redux",
+  //   completed: false,
+  //   description: "Learn Redux Toolkit and React-Redux",
+  // },
+  // {
+  //   id: 2,
+  //   title: "Build a Redux App",
+  //   completed: false,
+  //   description: "Build a Redux app using Redux Toolkit and React-Redux",
+  // },
+  // {
+  //   id: 3,
+  //   title:
+  //     "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
+  //   completed: true,
+  //   description:
+  //     "Learn TypeScript and use it with Redux Toolkit and React-Redux",
+  // },
+  // {
+  //   id: 4,
+  //   title:
+  //     "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
+  //   completed: true,
+  //   description:
+  //     "Learn TypeScript and use it with Redux Toolkit and React-Redux",
+  // },
+  // {
+  //   id: 5,
+  //   title:
+  //     "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
+  //   completed: true,
+  //   description:
+  //     "Learn TypeScript and use it with Redux Toolkit and React-Redux",
+  // },
   // {
   //   id : 6,
   //   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
@@ -90,6 +91,27 @@ export const todoSlice = createAppSlice({
     addTodo: create.reducer((state, action: PayloadAction<TodoSliceState>) => {
       state.push(action.payload)
     }),
+    fetchTodos: create.asyncThunk(
+      async () => {
+        console.log("fetching todos")
+        const { data, error } = await supabase.from("todos").select("*")
+        if (error) {
+          return [] as TodoSliceState[]
+        }
+        return data as TodoSliceState[]
+      },
+      {
+        pending: state => {
+          console.log("pending state")
+        },
+        fulfilled: (state, action) => {
+          return action.payload
+        },
+        rejected: state => {
+          console.log("rejected state")
+        },
+      },
+    ),
   }),
 
   selectors: {
@@ -98,5 +120,5 @@ export const todoSlice = createAppSlice({
   },
 })
 
-export const { addTodo } = todoSlice.actions
+export const { addTodo, fetchTodos } = todoSlice.actions
 export const { selectTodos, selectTodoCount } = todoSlice.selectors
