@@ -1,11 +1,8 @@
 
-import { Counter } from "./features/counter/Counter"
-import { Quotes } from "./features/quotes/Quotes"
 import { Todo } from "./features/todo/Todo"
-import logo from "./logo.svg"
 
 export const App = () => (
-  <div >
+  <div  className="w-dvw h-dvh bg-black text-white flex justify-center items-center " >
     <Todo />
   </div>
 )
