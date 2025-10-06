@@ -1,14 +1,23 @@
 import type { JSX } from "react"
-
+import { useState } from "react"
 import { FaTrashCan } from "react-icons/fa6"
 import { TodoSliceState } from "../todoSlice"
 export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
+
+    const [isCompleted, setIsCompleted] = useState(todo.completed);
+
+    const onRadioHandler = () => {
+        setIsCompleted(!isCompleted);
+    }
   return (
     <div className="grid grid-cols-8 my-2 ">
         
         <div className="flex  items-center col-start-1 col-end-2">
          
-          <input type="radio"
+          <input type="checkbox"
+          
+            checked={isCompleted}
+            onChange={onRadioHandler}
            className="w-3 h-3 accent-green-500
             border border-gray-400 rounded-full cursor-pointer"/>
         </div>

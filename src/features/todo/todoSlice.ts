@@ -25,7 +25,7 @@ const initialState: TodoSliceState[] = [
 {
   id : 3,
   title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
-  completed : false,
+  completed : true,
   description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"   
 }
 
@@ -40,12 +40,15 @@ export const todoSlice = createAppSlice({
       state.push(action.payload)
     }),
 
+    
+
   }),
   
   selectors: {
     selectTodos: state => state,
+    selectTodoCount : state => state.filter(todo=> !todo.completed)
   },
 })
 
 export const { addTodo } = todoSlice.actions
-export const { selectTodos } = todoSlice.selectors
+export const { selectTodos, selectTodoCount } = todoSlice.selectors
