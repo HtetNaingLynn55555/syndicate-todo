@@ -81,6 +81,39 @@ export const todoSlice = createAppSlice({
         },
       },
     ),
+    deleteTodo: create.asyncThunk(
+      async (todo: TodoSliceState, { rejectWithValue }) => {
+        try {
+          const { data, error } = await supabase
+            .from("todos")
+            .delete()
+            .eq("id", todo.id)
+            .select()
+
+          if (error) {
+            throw error
+          }
+
+          return data as TodoSliceState[]
+        } catch (error: any) {
+          return rejectWithValue(error.message ?? "Failed to Add todo")
+        }
+      },
+      {
+        pending: state => {
+          state.loading = true
+          state.error = null
+        },
+        fulfilled: (state, action) => {
+          state.loading = false
+          state.todos = state.todos.filter(t => t.id !== action.payload[0].id)
+        },
+        rejected: (state, action) => {
+          state.loading = false
+          state.error = action.payload as string
+        },
+      },
+    ),
   }),
 
   selectors: {
@@ -91,6 +124,6 @@ export const todoSlice = createAppSlice({
   },
 })
 
-export const { addTodos, fetchTodos } = todoSlice.actions
+export const { addTodos, fetchTodos, deleteTodo } = todoSlice.actions
 export const { selectTodos, selectLoading, selectError, selectTodoCount } =
   todoSlice.selectors
