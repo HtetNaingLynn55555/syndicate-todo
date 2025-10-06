@@ -1,7 +1,7 @@
 import { JSX } from "react"
 import { FaEye } from "react-icons/fa6"
 import { TodoSliceState } from "../todoSlice"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Label,
   TextInput,
@@ -9,15 +9,17 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
+  Checkbox,
 } from "flowbite-react"
 
+// import { fetchTodo } from "../todoSlice"
 import { useAppDispatch } from "../../../app/hooks"
 
 export const UpdateTodo = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
   const dispatch = useAppDispatch()
   const [openModal, setOpenModal] = useState(false)
-  const [todoTitle, setTodoTitle] = useState("")
-  const [todoDescription, setTodoDescription] = useState("")
+  const [todoTitle, setTodoTitle] = useState(todo.title)
+  const [todoDescription, setTodoDescription] = useState(todo.description)
   const [error, setError] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -79,6 +81,17 @@ export const UpdateTodo = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
               {error && !todoDescription ? (
                 <p className="text-red-500 pt-2">description is required</p>
               ) : null}
+            </div>
+
+            <div className="w-full flex items-center">
+              <Checkbox
+                id="promotion"
+                checked={todo.completed}
+                className="mr-2"
+              />
+              <Label htmlFor="promotion">
+                {`Mark as ${todo.completed ? "Incomplete" : "Complete"}`}
+              </Label>
             </div>
             <Button type="submit">Submit</Button>
           </form>
