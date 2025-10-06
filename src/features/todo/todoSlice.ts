@@ -29,6 +29,7 @@ export const todoSlice = createAppSlice({
       async () => {
         console.log("fetching todos")
         const { data, error } = await supabase.from("todos").select("*")
+       
         if (error) {
           throw error;
         }
