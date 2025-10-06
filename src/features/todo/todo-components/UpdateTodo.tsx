@@ -12,16 +12,20 @@ import {
   Checkbox,
 } from "flowbite-react"
 
-// import { fetchTodo } from "../todoSlice"
+import { Update } from "../todoSlice"
 import { useAppDispatch } from "../../../app/hooks"
 
 export const UpdateTodo = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
   const dispatch = useAppDispatch()
   const [openModal, setOpenModal] = useState(false)
+  const [isCompleted, setIsCompleted] = useState(todo.completed)
   const [todoTitle, setTodoTitle] = useState(todo.title)
   const [todoDescription, setTodoDescription] = useState(todo.description)
   const [error, setError] = useState(false)
 
+  const handleCheckbox = () => {
+    setIsCompleted(!isCompleted)
+  }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!todoTitle || !todoDescription) {
@@ -29,6 +33,14 @@ export const UpdateTodo = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
       return
     }
     if (todoTitle && todoDescription) {
+      dispatch(
+        Update({
+          id: todo.id,
+          title: todoTitle,
+          description: todoDescription,
+          completed: isCompleted,
+        }),
+      )
       setError(false)
 
       setTodoTitle("")
@@ -86,11 +98,12 @@ export const UpdateTodo = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
             <div className="w-full flex items-center">
               <Checkbox
                 id="promotion"
-                checked={todo.completed}
+                checked={isCompleted}
+                onChange={handleCheckbox}
                 className="mr-2"
               />
               <Label htmlFor="promotion">
-                {`Mark as ${todo.completed ? "Incomplete" : "Complete"}`}
+                {`Mark as ${isCompleted ? "Incomplete" : "Complete"}`}
               </Label>
             </div>
             <Button type="submit">Submit</Button>

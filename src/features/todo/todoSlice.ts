@@ -1,6 +1,7 @@
 // import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 import supabase from "../../config/supabaseClient"
+import { UpdateTodo } from "./todo-components/UpdateTodo"
 export type TodoSliceState = {
   id?: number
   title: string
@@ -114,6 +115,42 @@ export const todoSlice = createAppSlice({
         },
       },
     ),
+    Update: create.asyncThunk(
+      async (todo: TodoSliceState, { rejectWithValue }) => {
+        try {
+          const { data, error } = await supabase
+            .from("todos")
+            .update({ ...todo })
+            .eq("id", todo.id)
+            .select()
+
+          if (error) {
+            throw error
+          }
+          console.log("data", data)
+
+          return data as TodoSliceState[]
+        } catch (error: any) {
+          return rejectWithValue(error.message ?? "Failed to Add todo")
+        }
+      },
+      {
+        pending: state => {
+          state.loading = true
+          state.error = null
+        },
+        fulfilled: (state, action) => {
+          state.loading = false
+          state.todos = state.todos.map(t =>
+            t.id === action.payload[0].id ? action.payload[0] : t,
+          )
+        },
+        rejected: (state, action) => {
+          state.loading = false
+          state.error = action.payload as string
+        },
+      },
+    ),
   }),
 
   selectors: {
@@ -124,6 +161,6 @@ export const todoSlice = createAppSlice({
   },
 })
 
-export const { addTodos, fetchTodos, deleteTodo } = todoSlice.actions
+export const { addTodos, fetchTodos, deleteTodo, Update } = todoSlice.actions
 export const { selectTodos, selectLoading, selectError, selectTodoCount } =
   todoSlice.selectors
