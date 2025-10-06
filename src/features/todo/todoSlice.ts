@@ -21,6 +21,12 @@ const initialState: TodoSliceState[] = [
     title : "Build a Redux App",
     completed : false,
     description : "Build a Redux app using Redux Toolkit and React-Redux"   
+},
+{
+  id : 3,
+  title : "Learn TypeScript from coursera and use it with Redux Toolkit and React-Redux",
+  completed : false,
+  description : "Learn TypeScript and use it with Redux Toolkit and React-Redux"   
 }
 
 ]

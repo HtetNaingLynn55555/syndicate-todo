@@ -1,12 +1,27 @@
 import type { JSX } from "react"
 
-import { FaRegCircle } from "react-icons/fa6";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaTrashCan } from "react-icons/fa6"
 import { TodoSliceState } from "../todoSlice"
 export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
-  return <div className="flex justify-center items-center gap-3 my-2">
-    <FaRegCircle className="mr-2 text-green-700" />
-    {todo.title}
-    <FaTrashCan className="ml-auto text-red-500" />
-  </div>
+  return (
+    <div className="grid grid-cols-8 my-2 ">
+        
+        <div className="flex  items-center col-start-1 col-end-2">
+         
+          <input type="radio"
+           className="w-3 h-3 accent-green-500
+            border border-gray-400 rounded-full cursor-pointer"/>
+        </div>
+    
+
+      <div className="col-start-2 col-end-6">
+        <div className="flex items-center"
+        >{todo.title}</div>
+      </div>
+      <div className="col-start-6 col-end-7 flex  items-center">
+<FaTrashCan className="ml-auto  hover:cursor-pointer text-red-500" />
+      </div>
+      
+    </div>
+  )
 }
