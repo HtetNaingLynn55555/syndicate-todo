@@ -1,8 +1,8 @@
 import type { JSX } from "react"
 import { useState } from "react"
 import { DeleteTodoComponent } from "./DeleteTodoComponent"
+import { UpdateTodo } from "./UpdateTodo"
 
-import { FaEye } from "react-icons/fa6"
 import { TodoSliceState } from "../todoSlice"
 export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
   const [isCompleted, setIsCompleted] = useState(todo.completed)
@@ -26,8 +26,8 @@ export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
         <div className="flex items-center">{todo.title}</div>
       </div>
       <div className="col-start-7 col-end-8 flex sm:gap-4 items-center justify-end">
-        <FaEye className="hover:cursor-pointer text-yellow-400" />
-
+       
+        <UpdateTodo todo={todo} />
         <DeleteTodoComponent todo={todo} />
       </div>
     </div>
