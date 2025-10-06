@@ -1,6 +1,7 @@
 import type { JSX } from "react"
 import { useState } from "react"
-import { FaTrashCan } from "react-icons/fa6"
+import { DeleteTodoComponent } from "./DeleteTodoComponent"
+
 import { FaEye } from "react-icons/fa6"
 import { TodoSliceState } from "../todoSlice"
 export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
@@ -27,7 +28,7 @@ export const TodoItem = ({ todo }: { todo: TodoSliceState }): JSX.Element => {
       <div className="col-start-7 col-end-8 flex sm:gap-4 items-center justify-end">
         <FaEye className="hover:cursor-pointer text-yellow-400" />
 
-        <FaTrashCan className="  hover:cursor-pointer text-red-700" />
+        <DeleteTodoComponent todo={todo} />
       </div>
     </div>
   )
