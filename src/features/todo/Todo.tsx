@@ -11,14 +11,14 @@ import {
   fetchTodos,
   selectError,
   selectLoading,
-  selectTodos,
   selectTodoCount,
+  selectFilteredTodos,
 } from "./todoSlice"
 import { ClearCompleteTodo } from "./todo-components/ClearCompleteTodo"
 
 export const Todo = (): JSX.Element => {
   const dispatch = useAppDispatch()
-  const todos = useAppSelector(selectTodos)
+  const todos = useAppSelector(selectFilteredTodos)
   const todoCount = useAppSelector(selectTodoCount)
   const loading = useAppSelector(selectLoading)
   const error = useAppSelector(selectError)

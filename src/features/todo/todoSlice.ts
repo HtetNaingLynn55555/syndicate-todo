@@ -1,7 +1,6 @@
 // import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 import supabase from "../../config/supabaseClient"
-import { UpdateTodo } from "./todo-components/UpdateTodo"
 export type TodoSliceState = {
   id?: number
   title: string
@@ -13,18 +12,25 @@ export type TodoState = {
   loading?: boolean
   error: string | null
   todos: TodoSliceState[]
+  filter: "all" | "active" | "completed"
 }
 
 const initialState: TodoState = {
   loading: false,
   error: null,
   todos: [],
+  filter: "all",
 }
 
 export const todoSlice = createAppSlice({
   name: "todo",
   initialState,
   reducers: create => ({
+    setFilter: create.reducer(
+      (state, action: { payload: "all" | "active" | "completed" }) => {
+        state.filter = action.payload
+      },
+    ),
     fetchTodos: create.asyncThunk(
       async () => {
         const { data, error } = await supabase.from("todos").select("*")
@@ -154,13 +160,26 @@ export const todoSlice = createAppSlice({
   }),
 
   selectors: {
-    selectTodos: state => state.todos,
     selectLoading: state => state.loading,
+
+    selectFilteredTodos: state => {
+      if (state.filter === "active")
+        return state.todos.filter(todo => !todo.completed)
+      if (state.filter === "completed")
+        return state.todos.filter(todo => todo.completed)
+      return state.todos
+    },
+
     selectError: state => state.error,
     selectTodoCount: state => state.todos.filter(todo => !todo.completed),
   },
 })
 
-export const { addTodos, fetchTodos, deleteTodo, Update } = todoSlice.actions
-export const { selectTodos, selectLoading, selectError, selectTodoCount } =
-  todoSlice.selectors
+export const { addTodos, setFilter, fetchTodos, deleteTodo, Update } =
+  todoSlice.actions
+export const {
+  selectFilteredTodos,
+  selectLoading,
+  selectError,
+  selectTodoCount,
+} = todoSlice.selectors
