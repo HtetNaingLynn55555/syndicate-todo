@@ -4,6 +4,9 @@ import { Provider } from "react-redux"
 import { App } from "./App"
 import { store } from "./app/store"
 import "./index.css"
+import { BrowserRouter, Routes, Route } from "react-router"
+import { SingUp } from "./components/Auth/SingUp"
+import { Login } from "./components/Auth/Login"
 
 const container = document.getElementById("root")
 
@@ -12,9 +15,15 @@ if (container) {
 
   root.render(
     <StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <BrowserRouter>
+        <Provider store={store}>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/singup" element={<SingUp />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Provider>
+      </BrowserRouter>
     </StrictMode>,
   )
 } else {
