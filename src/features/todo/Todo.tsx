@@ -43,7 +43,7 @@ export const Todo = (): JSX.Element => {
         <div className="grid grid-cols-8 col-start-3 col-end-10 gap-2  ">
           <TodoCount count={todoCount.length} />
           <TodoFilter />
-          <ClearCompleteTodo />
+          <ClearCompleteTodo completeTodos={todos.filter(todo => todo.completed)  } />
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 import { JSX } from "react"
 import { FaEye } from "react-icons/fa6"
 import { TodoSliceState } from "../todoSlice"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {
   Label,
   TextInput,

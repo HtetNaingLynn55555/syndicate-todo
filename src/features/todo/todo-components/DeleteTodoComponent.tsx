@@ -11,8 +11,6 @@ export const DeleteTodoComponent = ({
 }: {
   todo: TodoSliceState
 }): JSX.Element => {
-  console.log("todo", todo.id)
-
   const dispatch = useAppDispatch()
   const handleDelete = (todo: TodoSliceState) => {
     dispatch(deleteTodo(todo))

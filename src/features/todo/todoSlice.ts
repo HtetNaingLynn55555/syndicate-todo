@@ -103,7 +103,7 @@ export const todoSlice = createAppSlice({
 
           return data as TodoSliceState[]
         } catch (error: any) {
-          return rejectWithValue(error.message ?? "Failed to Add todo")
+          return rejectWithValue(error.message ?? "Failed to delete todo")
         }
       },
       {
@@ -114,6 +114,39 @@ export const todoSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.loading = false
           state.todos = state.todos.filter(t => t.id !== action.payload[0].id)
+        },
+        rejected: (state, action) => {
+          state.loading = false
+          state.error = action.payload as string
+        },
+      },
+    ),
+    deleteCompleteTodo: create.asyncThunk(
+      async (selectedIds: number[], { rejectWithValue }) => {
+        try {
+          const { data, error } = await supabase
+            .from("todos")
+            .delete()
+            .in("id", selectedIds)
+            .select()
+
+          if (error) {
+            throw error
+          }
+          console.log("data", data)
+          // return data as TodoSliceState[]
+        } catch (error: any) {
+          return rejectWithValue(error.message ?? "Failed to delete todo")
+        }
+      },
+      {
+        pending: state => {
+          state.loading = true
+          state.error = null
+        },
+        fulfilled: (state, action) => {
+          state.loading = false
+          state.todos = state.todos.filter(t => !t.completed)
         },
         rejected: (state, action) => {
           state.loading = false
@@ -137,7 +170,7 @@ export const todoSlice = createAppSlice({
 
           return data as TodoSliceState[]
         } catch (error: any) {
-          return rejectWithValue(error.message ?? "Failed to Add todo")
+          return rejectWithValue(error.message ?? "Failed to update todo")
         }
       },
       {
@@ -175,8 +208,14 @@ export const todoSlice = createAppSlice({
   },
 })
 
-export const { addTodos, setFilter, fetchTodos, deleteTodo, Update } =
-  todoSlice.actions
+export const {
+  addTodos,
+  deleteCompleteTodo,
+  setFilter,
+  fetchTodos,
+  deleteTodo,
+  Update,
+} = todoSlice.actions
 export const {
   selectFilteredTodos,
   selectLoading,
