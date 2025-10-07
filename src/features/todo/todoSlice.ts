@@ -144,8 +144,9 @@ export const todoSlice = createAppSlice({
           state.loading = true
           state.error = null
         },
-        fulfilled: (state, action) => {
+        fulfilled: state => {
           state.loading = false
+
           state.todos = state.todos.filter(t => !t.completed)
         },
         rejected: (state, action) => {
@@ -190,6 +191,47 @@ export const todoSlice = createAppSlice({
         },
       },
     ),
+
+    search: create.asyncThunk(
+      async (search: string, { rejectWithValue }) => {
+        try {
+          let data, error
+
+          console.log("search", search)
+          if (search === "") {
+            ;({ data, error } = await supabase.from("todos").select("*"))
+          } else {
+            ;({ data, error } = await supabase
+              .from("todos")
+              .select("*")
+              .ilike("title", `%${search}%`))
+          }
+
+          if (error) {
+            throw error
+          }
+          console.log("data here", data)
+
+          return data as TodoSliceState[]
+        } catch (error: any) {
+          return rejectWithValue(error.message ?? "Failed to search todo")
+        }
+      },
+      {
+        pending: state => {
+          state.loading = true
+          state.error = null
+        },
+        fulfilled: (state, action) => {
+          state.loading = false
+          state.todos = [...action.payload]
+        },
+        rejected: (state, action) => {
+          state.loading = false
+          state.error = action.payload as string
+        },
+      },
+    ),
   }),
 
   selectors: {
@@ -215,6 +257,7 @@ export const {
   fetchTodos,
   deleteTodo,
   Update,
+  search,
 } = todoSlice.actions
 export const {
   selectFilteredTodos,
